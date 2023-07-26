@@ -7,6 +7,7 @@ import (
 	"github.com/go-mysql-org/go-mysql/mocks"
 	"github.com/go-mysql-org/go-mysql/mysql"
 	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 )
 
 func TestReadAuthData(t *testing.T) {
@@ -18,18 +19,12 @@ func TestReadAuthData(t *testing.T) {
 
 	// test out of range index returns 'bad handshake' error
 	_, _, _, err := c.readAuthData(data, len(data))
-	if err == nil || err.Error() != "ERROR 1043 (08S01): Bad handshake" {
-		t.Fatal("expected error, got nil")
-	}
+	require.ErrorContains(t, err, "ERROR 1043 (08S01): Bad handshake")
 
 	// test good index position reads auth data
 	_, _, readBytes, err := c.readAuthData(data, len(data)-1)
-	if err != nil {
-		t.Fatalf("expected nil error, got %v", err)
-	}
-	if readBytes != len(data)-1 {
-		t.Fatalf("expected %d read bytes, got %d", len(data)-1, readBytes)
-	}
+	require.NoError(t, err)
+	require.Equal(t, len(data)-1, readBytes)
 }
 
 func TestDecodeFirstPart(t *testing.T) {
@@ -69,7 +64,7 @@ func TestReadDB(t *testing.T) {
 	}
 
 	// example data from
-	// https://dev.mysql.com/doc/internals/en/connection-phase-packets.html#packet-Protocol::HandshakeResponse41
+	// https://dev.mysql.com/doc/dev/mysql-server/latest/page_protocol_connection_phase_packets_protocol_handshake_response.html#sect_protocol_connection_phase_packets_protocol_handshake_response41
 	data := []byte{
 		0x54, 0x00, 0x00, 0x01, 0x8d, 0xa6, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x01,
 		0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -101,7 +96,7 @@ func TestReadDB(t *testing.T) {
 
 func TestReadPluginName(t *testing.T) {
 	// example data from
-	// https://dev.mysql.com/doc/internals/en/connection-phase-packets.html#packet-Protocol::HandshakeResponse41
+	// https://dev.mysql.com/doc/dev/mysql-server/latest/page_protocol_connection_phase_packets_protocol_handshake_response.html#sect_protocol_connection_phase_packets_protocol_handshake_response41
 	mysqlNativePassword := []byte{
 		0x54, 0x00, 0x00, 0x01, 0x8d, 0xa6, 0x0f, 0x00, 0x00, 0x00, 0x00,
 		0x01, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -172,7 +167,7 @@ func TestReadPluginName(t *testing.T) {
 func TestReadAttributes(t *testing.T) {
 	var err error
 	// example data from
-	// https://dev.mysql.com/doc/internals/en/connection-phase-packets.html#packet-Protocol::HandshakeResponse41
+	// https://dev.mysql.com/doc/dev/mysql-server/latest/page_protocol_connection_phase_packets_protocol_handshake_response.html#sect_protocol_connection_phase_packets_protocol_handshake_response41
 	data := []byte{
 		0xb2, 0x00, 0x00, 0x01, 0x85, 0xa2, 0x1e, 0x00, 0x00, 0x00,
 		0x00, 0x40, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,

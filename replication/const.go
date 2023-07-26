@@ -35,7 +35,7 @@ const (
 
 const (
 	BINLOG_ROW_IMAGE_FULL    = "FULL"
-	BINLOG_ROW_IAMGE_MINIMAL = "MINIMAL"
+	BINLOG_ROW_IMAGE_MINIMAL = "MINIMAL"
 	BINLOG_ROW_IMAGE_NOBLOB  = "NOBLOB"
 )
 
@@ -90,6 +90,9 @@ const (
 	TRANSACTION_CONTEXT_EVENT
 	VIEW_CHANGE_EVENT
 	XA_PREPARE_LOG_EVENT
+	PARTIAL_UPDATE_ROWS_EVENT
+	TRANSACTION_PAYLOAD_EVENT
+	HEARTBEAT_LOG_EVENT_V2
 )
 
 const (
@@ -98,6 +101,11 @@ const (
 	MARIADB_BINLOG_CHECKPOINT_EVENT
 	MARIADB_GTID_EVENT
 	MARIADB_GTID_LIST_EVENT
+	MARIADB_START_ENCRYPTION_EVENT
+	MARIADB_QUERY_COMPRESSED_EVENT
+	MARIADB_WRITE_ROWS_COMPRESSED_EVENT_V1
+	MARIADB_UPDATE_ROWS_COMPRESSED_EVENT_V1
+	MARIADB_DELETE_ROWS_COMPRESSED_EVENT_V1
 )
 
 func (e EventType) String() string {
@@ -188,6 +196,22 @@ func (e EventType) String() string {
 		return "ViewChangeEvent"
 	case XA_PREPARE_LOG_EVENT:
 		return "XAPrepareLogEvent"
+	case PARTIAL_UPDATE_ROWS_EVENT:
+		return "PartialUpdateRowsEvent"
+	case TRANSACTION_PAYLOAD_EVENT:
+		return "TransactionPayloadEvent"
+	case HEARTBEAT_LOG_EVENT_V2:
+		return "HeartbeatLogEventV2"
+	case MARIADB_START_ENCRYPTION_EVENT:
+		return "MariadbStartEncryptionEvent"
+	case MARIADB_QUERY_COMPRESSED_EVENT:
+		return "MariadbQueryCompressedEvent"
+	case MARIADB_WRITE_ROWS_COMPRESSED_EVENT_V1:
+		return "MariadbWriteRowsCompressedEventV1"
+	case MARIADB_UPDATE_ROWS_COMPRESSED_EVENT_V1:
+		return "MariadbUpdateRowsCompressedEventV1"
+	case MARIADB_DELETE_ROWS_COMPRESSED_EVENT_V1:
+		return "MariadbDeleteRowsCompressedEventV1"
 
 	default:
 		return "UnknownEvent"
